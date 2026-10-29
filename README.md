@@ -19,14 +19,69 @@ half_add_sub_tb.v	Stimulus and VCD generation
 
 ### Verilog Program
 ```
+module half_add(
+	input wire a,
+	input wire b,
+	output wire sum,carry
+);
+	assign sum= a^b;
+	assign carry= a&b;
+endmodule
+module half_sub(
+	input wire a,
+	input wire b,
+	output wire diff,bor
+);
+	assign diff= a^b;
+	assign bor= (~a)&b;
+endmodule
+
 ```
 ### Testbench Program
+```
+module tb;
+    reg a,b;
+    wire sum, carry;
+    wire diff, bor;
+ 
+    // Instantiate the Half Adder
+    half_add uut1 (
+        .a(a),
+        .b(b),
+        .sum(sum),
+        .carry(carry)
+    );
+ 
+    // Instantiate the Half Subtractor
+    half_sub uut2 (
+        .a(a),
+        .b(b),
+        .diff(diff),
+        .bor(bor)
+    );
+ 
+    initial begin
+        // ---- VCD dump setup ----
+        $dumpfile("half.vcd");   // name of the VCD file to be generated
+        $dumpvars(0, tb);                // dump all signals in this testbench hierarchy
+ 
+        // ---- Apply all 4 input combinations ----
+        $monitor("Time=%0t A=%b B=%b | Sum=%b Carry=%b | Diff=%b Borrow=%b",
+                   $time, a, b, sum, carry, diff, bor);
+        a = 0; b = 0; #10;
+        a = 0; b = 1; #10;
+        a = 1; b = 0; #10;
+        a = 1; b = 1; #10;
+ 
+        #10 $finish;
+    end
+endmodule<img width="1535" height="228" alt="Screenshot 2026-10-29 103634" src="https://github.com/user-attachments/assets/30d860d7-ed30-435d-ad63-2ef510fc3d46" />
 
+```
 
 ### Truth Table
+<img width="1533" height="178" alt="Screenshot 2026-10-29 103839" src="https://github.com/user-attachments/assets/1e289553-db34-4976-88a6-4a2e604f62db" />
 
-
-<img width="645" height="87" alt="TT3" src="https://github.com/user-attachments/assets/37e33bb3-d647-45d5-b610-c255d7e41b8b" />
 
 ### Simulation Procedure
 
@@ -85,26 +140,9 @@ The design was compiled and simulated using Synopsys VCS, and the functionality 
 
 ### Output
 
+<img width="1535" height="228" alt="Screenshot 2026-10-29 103634" src="https://github.com/user-attachments/assets/30d860d7-ed30-435d-ad63-2ef510fc3d46" />
 
-### Viva-Voce Questions
-
-•	What is a Half Adder, and what are its limitations compared to a Full Adder?
-
-•	What is a Half Subtractor, and what does the Borrow output signify?
-
-•	Why is the Sum/Difference expression identical (A⊕B) for both circuits, while Carry and Borrow differ?
-
-•	What gate realizes the XOR function, and why is it central to both circuits?
-
-•	What is the purpose of a Verilog testbench?
-
-•	Why is a VCD file generated, and what does $dumpvars(0, tb) do?
-
-•	What is the purpose of ./simv?
-
-•	What is the difference between simulation and synthesis?
-
-•	How would you extend this design to a Full Adder/Full Subtractor?
+<img width="1527" height="267" alt="Screenshot 2026-10-29 103805" src="https://github.com/user-attachments/assets/0d881b4e-9fc5-4396-8918-72e4138d9f07" />
 
 ### Result
 
